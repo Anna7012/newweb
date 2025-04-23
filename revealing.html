@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Disclose Your Travel Plan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 350px;
+      margin-bottom: 40px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #444;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .entry {
+      background: #fff;
+      border-left: 5px solid #007BFF;
+      margin: 10px 0;
+      padding: 15px;
+      width: 350px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .entry p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Disclose Your Travel Plan</h1>
+
+  <form id="travelForm">
+    <label for="place">Place you are visiting:</label>
+    <input type="text" id="place" name="place" required>
+
+    <label for="from">Date From:</label>
+    <input type="date" id="from" name="from_date" required>
+
+    <label for="to">Date To:</label>
+    <input type="date" id="to" name="to_date" required>
+
+    <label for="people">How many people are with you?</label>
+    <input type="number" id="people" name="num_people" min="1" required>
+
+    <label for="email">Enter your Email ID:</label>
+    <input type="email" id="email" name="email" required>
+
+    <button type="submit">Submit Plan</button>
+  </form>
+
+  <div id="entriesContainer"></div>
+
+  <script>
+    const form = document.getElementById('travelForm');
+    const container = document.getElementById('entriesContainer');
+
+    function getPlans() {
+      const plans = localStorage.getItem('travelPlans');
+      return plans ? JSON.parse(plans) : [];
+    }
+
+    function savePlan(plan) {
+      const plans = getPlans();
+      plans.push(plan);
+      localStorage.setItem('travelPlans', JSON.stringify(plans));
+    }
+
+    function renderPlans() {
+      const plans = getPlans();
+      container.innerHTML = '';
+      plans.forEach((plan, index) => {
+        const div = document.createElement('div');
+        div.classList.add('entry');
+        div.innerHTML = `
+          <p><strong>Place:</strong> ${plan.place}</p>
+          <p><strong>From:</strong> ${plan.from}</p>
+          <p><strong>To:</strong> ${plan.to}</p>
+          <p><strong>People:</strong> ${plan.people}</p>
+          <p><strong>Email:</strong> ${plan.email}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const plan = {
+        place: form.place.value,
+        from: form.from.value,
+        to: form.to.value,
+        people: form.people.value,
+        email: form.email.value
+      };
+
+      savePlan(plan);
+      renderPlans();
+      form.reset();
+    });
+
+    // Initial rendering
+    renderPlans();
+  </script>
+
+</body>
+</html>
